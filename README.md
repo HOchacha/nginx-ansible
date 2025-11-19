@@ -93,7 +93,6 @@ Manual renewal test:
 sudo certbot renew --dry-run
 ```
 
-⸻
 
 # Directory Structure (Example)
 ```
@@ -114,8 +113,6 @@ nginx-ansible/
 ├─ site.yml
 └─ README.md
 ```
-
-⸻
 
 # After Installation
 
@@ -142,8 +139,6 @@ chain.pem
 certbot.timer → active
 ```
 
-⸻
-
 # Removing or Reinstalling
 
 You can safely remove:
@@ -153,9 +148,8 @@ You can safely remove:
 
 If you want, I can also generate a cleanup.yml playbook.
 
-⸻
-
 ### Notes
 	•	Ensure your DNS A record points to your server before issuing certificates
 	•	Port 80 must remain open for renewal (HTTP-01)
 	•	Supports both single-domain and multi-domain certificates
+
