@@ -1,0 +1,27 @@
+baseDir: {{ proxy_watcher_base_dir | default('/etc/nginx/sites-available') }}
+
+templateNames:
+{% for name in proxy_watcher_template_names %}
+  - {{ name }}
+{% endfor %}
+
+interval: {{ proxy_watcher_interval | default('30s') }}
+
+missingTTL: {{ proxy_watcher_missing_ttl | default('1m') }}
+missingThreshold: {{ proxy_watcher_missing_threshold | default(0) }}
+
+cloudstack:
+  url: {{ proxy_watcher_cloudstack_url | quote }}
+  apiKey: {{ proxy_watcher_cloudstack_api_key | quote }}
+  secretKey: {{ proxy_watcher_cloudstack_secret_key | quote }}
+
+reload:
+  enabled: {{ proxy_watcher_reload_enabled | default(true) | lower }}
+  command: {{ proxy_watcher_reload_command | default('nginx') | quote }}
+  args:
+{% for a in proxy_watcher_reload_args | default(['-s', 'reload']) %}
+    - {{ a | quote }}
+{% endfor %}
+
+log:
+  name: {{ proxy_watcher_log_name | default('agent') | quote }}

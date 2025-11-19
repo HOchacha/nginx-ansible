@@ -1,0 +1,22 @@
+# roles/proxy_watcher/templates/proxy-watcher.service.j2
+[Unit]
+Description=Proxy Watcher (Nginx config reconciler)
+Wants=network-online.target nginx.service
+After=network-online.target nginx.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/proxy-watcher
+ExecStart={{ proxy_watcher_install_path }} --config {{ proxy_watcher_config_path }}
+Restart=always
+RestartSec=3
+LimitNOFILE=65536
+Environment=GOTRACEBACK=all
+StandardOutput=append:/var/log/proxy-watcher/proxy-watcher.log
+StandardError=append:/var/log/proxy-watcher/proxy-watcher.log
+
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,89 @@
+# roles/proxy_watcher/tasks/main.yml
+
+- name: Ensure config directory exists
+  file:
+    path: "{{ proxy_watcher_config_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Download proxy-watcher binary
+  get_url:
+    url: "{{ proxy_watcher_binary_url }}"
+    dest: "{{ proxy_watcher_install_path }}"
+    mode: "0755"
+  register: proxy_watcher_binary
+
+- name: Download checksum file
+  get_url:
+    url: "{{ proxy_watcher_checksum_url }}"
+    dest: "/tmp/proxy-watcher.sha256"
+    mode: "0644"
+
+- name: Verify proxy-watcher checksum
+  command: sha256sum -c /tmp/proxy-watcher.sha256
+  args:
+    chdir: "/usr/local/bin"
+  register: checksum_result
+  changed_when: false
+  failed_when: checksum_result.rc != 0
+
+- name: Deploy proxy-watcher config
+  template:
+    src: "config.yaml.j2"
+    dest: "{{ proxy_watcher_config_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart proxy-watcher
+
+- name: Create log directory for proxy-watcher
+  file:
+    path: /var/log/proxy-watcher
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Ensure proxy-watcher workdir exists
+  file:
+    path: /opt/proxy-watcher
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Ensure proxy-watcher config directory exists
+  file:
+    path: /etc/proxy-watcher
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Deploy proxy-watcher config
+  template:
+    src: config.yaml.j2
+    dest: /etc/proxy-watcher/config.yaml
+    owner: root
+    group: root
+    mode: "0640"
+  notify: Restart proxy-watcher
+
+- name: Install systemd unit
+  template:
+    src: "proxy-watcher.service.j2"
+    dest: "/etc/systemd/system/proxy-watcher.service"
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload systemd
+    - Restart proxy-watcher
+
+- name: Ensure proxy-watcher service is enabled
+  systemd:
+    name: proxy-watcher
+    enabled: yes
+    state: started

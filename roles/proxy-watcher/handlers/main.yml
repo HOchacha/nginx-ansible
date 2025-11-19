@@ -1,0 +1,9 @@
+# roles/proxy_watcher/handlers/main.yml
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: Restart proxy-watcher
+  systemd:
+    name: proxy-watcher
+    state: restarted

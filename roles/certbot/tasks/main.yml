@@ -1,0 +1,18 @@
+- name: Install certbot
+  apt:
+    name:
+      - certbot
+    state: present
+    update_cache: yes
+
+- name: Obtain/renew certificate for {{ domain_name }} using ACME HTTP-01 (webroot)
+  command: >
+    certbot certonly
+    --webroot
+    --webroot-path /var/www/{{ domain_name }}
+    -d {{ domain_name }}
+    --non-interactive
+    --agree-tos
+    -m {{ letsencrypt_email }}
+  args:
+    creates: "/etc/letsencrypt/live/{{ domain_name }}/fullchain.pem"

@@ -1,0 +1,34 @@
+proxy_watcher_version: "v0.1.0"
+
+proxy_watcher_base_url: "https://github.com/HOchacha/proxy-watcher/releases/download/{{ proxy_watcher_version }}"
+
+proxy_watcher_binary_url: "{{ proxy_watcher_base_url }}/proxy-watcher"
+proxy_watcher_checksum_url: "{{ proxy_watcher_base_url }}/proxy-watcher.sha256"
+
+proxy_watcher_install_path: "/usr/local/bin/proxy-watcher"
+proxy_watcher_config_dir: "/etc/proxy-watcher"
+proxy_watcher_config_path: "{{ proxy_watcher_config_dir }}/config.yaml"
+
+proxy_watcher_base_dir: "/etc/nginx/sites-available"
+
+proxy_watcher_template_names:
+  - "Ubuntu_22.04_VSCode"
+  - "Ubuntu_24.04_VSCode"
+  - "Ubuntu_22.04_Jupyter"
+  - "Ubuntu_24.04_Jupyter"
+
+proxy_watcher_interval: "30s"
+proxy_watcher_missing_ttl: "1m"
+proxy_watcher_missing_threshold: 0
+
+proxy_watcher_cloudstack_url: "https://boan.kloud.zone/client/api"
+proxy_watcher_cloudstack_api_key: ""
+proxy_watcher_cloudstack_secret_key: ""
+
+proxy_watcher_reload_enabled: true
+proxy_watcher_reload_command: "nginx"
+proxy_watcher_reload_args:
+  - "-s"
+  - "reload"
+
+proxy_watcher_log_name: "agent"
