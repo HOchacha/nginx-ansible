@@ -18,12 +18,14 @@
     # 컨트롤 노드(= ansible-playbook 실행하는 머신)에서만 실행
       delegate_to: localhost
       run_once: true
+      become: false
       file:
         path: "{{ proxy_watcher_local_path | dirname }}"
         state: directory
 
     - name: gh auth login on control node (with token)
       delegate_to: localhost
+      become: false
       run_once: true
       environment:
         GITHUB_TOKEN: "{{ github_token }}"
@@ -38,6 +40,7 @@
 
     - name: Download proxy-watcher on control node via gh
       delegate_to: localhost
+      become: false
       run_once: true
       environment:
         GITHUB_TOKEN: "{{ github_token }}"
