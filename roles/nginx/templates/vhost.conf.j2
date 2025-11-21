@@ -1,14 +1,14 @@
 server {
     listen 80;
     listen [::]:80;
-    server_name {{ domain_name }};
+    server_name {{ item.name }};
 
-    # 👇 ACME HTTP-01 챌린지 처리용 (webroot 방식 핵심)
+    # ACME HTTP-01 (webroot 방식)
     location /.well-known/acme-challenge/ {
-        alias /var/www/{{ domain_name }}/.well-known/acme-challenge/;
+        root {{ item.webroot_path }};
     }
 
-    root /var/www/{{ domain_name }};
+    root /var/www/{{ item.name }};
     index index.html index.htm;
 
     location / {

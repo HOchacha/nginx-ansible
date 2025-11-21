@@ -8,27 +8,6 @@
     group: root
     mode: "0755"
 
-- name: Download proxy-watcher binary
-  get_url:
-    url: "{{ proxy_watcher_binary_url }}"
-    dest: "{{ proxy_watcher_install_path }}"
-    mode: "0755"
-  register: proxy_watcher_binary
-
-- name: Download checksum file
-  get_url:
-    url: "{{ proxy_watcher_checksum_url }}"
-    dest: "/tmp/proxy-watcher.sha256"
-    mode: "0644"
-
-- name: Verify proxy-watcher checksum
-  command: sha256sum -c /tmp/proxy-watcher.sha256
-  args:
-    chdir: "/usr/local/bin"
-  register: checksum_result
-  changed_when: false
-  failed_when: checksum_result.rc != 0
-
 - name: Deploy proxy-watcher config
   template:
     src: "config.yaml.j2"
@@ -49,14 +28,6 @@
 - name: Ensure proxy-watcher workdir exists
   file:
     path: /opt/proxy-watcher
-    state: directory
-    owner: root
-    group: root
-    mode: "0755"
-
-- name: Ensure proxy-watcher config directory exists
-  file:
-    path: /etc/proxy-watcher
     state: directory
     owner: root
     group: root

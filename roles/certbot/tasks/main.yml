@@ -5,14 +5,15 @@
     state: present
     update_cache: yes
 
-- name: Obtain/renew certificate for {{ domain_name }} using ACME HTTP-01 (webroot)
+- name: "Obtain/renew certificate for {{ item.name }} using ACME HTTP-01 (webroot)"
+  loop: "{{ domain_name }}"
   command: >
     certbot certonly
     --webroot
-    --webroot-path /var/www/{{ domain_name }}
-    -d {{ domain_name }}
+    --webroot-path /var/www/{{ item.name }}
+    -d {{ item.name }}
     --non-interactive
     --agree-tos
-    -m {{ letsencrypt_email }}
+    -m {{ item.letsencrypt_email }}
   args:
-    creates: "/etc/letsencrypt/live/{{ domain_name }}/fullchain.pem"
+    creates: "/etc/letsencrypt/live/{{ item.name }}/fullchain.pem"

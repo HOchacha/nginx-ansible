@@ -1,10 +1,22 @@
+domain_name:
+  - name: "boan.kloud.zone"
+    webroot_path: "/var/www/boan.kloud.zone"
+    letsencrypt_email: "boan@boanlab.com"
+#  - name: "nsx.boanlab.com"
+#    webroot_path: "/var/www/nsx.boanlab.com"
+#    letsencrypt_email: "boan@boanlab.com"
+
 proxy_watcher_version: "v0.1.0"
+proxy_watcher_filename: "proxy-watcher"
 
-proxy_watcher_base_url: "https://github.com/HOchacha/proxy-watcher/releases/download/{{ proxy_watcher_version }}"
 
+proxy_watcher_install_path: "/usr/local/bin/proxy-watcher"
+
+proxy_watcher_base_url: "https://github.com/boanlab/cloud-infra-service/releases/download/{{ proxy_watcher_version }}"
 proxy_watcher_binary_url: "{{ proxy_watcher_base_url }}/proxy-watcher"
 proxy_watcher_checksum_url: "{{ proxy_watcher_base_url }}/proxy-watcher.sha256"
 
+proxy_watcher_repo: "boanlab/cloud-infra-service"
 proxy_watcher_install_path: "/usr/local/bin/proxy-watcher"
 proxy_watcher_config_dir: "/etc/proxy-watcher"
 proxy_watcher_config_path: "{{ proxy_watcher_config_dir }}/config.yaml"

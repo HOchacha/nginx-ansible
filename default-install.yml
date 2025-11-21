@@ -1,6 +1,11 @@
 - name: Setup Nginx and Let's Encrypt (Certbot)
   hosts: web
   become: true
+  vars_prompt:
+    - name: github_token
+      prompt: "GitHub Personal Access Token (for private releases, leave blank if not needed)"
+      private: yes
   roles:
     - nginx
-    - certbot
+    - proxy-watcher
+    #- certbot

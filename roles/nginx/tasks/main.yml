@@ -4,24 +4,27 @@
     state: present
     update_cache: yes
 
-- name: Create web root directory for {{ domain_name }}
+- name: Create web root directory for {{ item.name }}
   file:
-    path: "/var/www/{{ domain_name }}"
+    path: "/var/www/{{ item.name }}"
     state: directory
     owner: www-data
     group: www-data
     mode: "0755"
+  loop: "{{ domain_name }}"
 
-- name: Deploy Nginx vhost for {{ domain_name }}
+- name: Deploy Nginx vhost for {{ item.name }}
+  loop: "{{ domain_name }}"
   template:
     src: vhost.conf.j2
-    dest: "/etc/nginx/sites-available/{{ domain_name }}"
+    dest: "/etc/nginx/sites-available/{{ item.name }}"
   notify: Reload nginx
 
-- name: Enable site {{ domain_name }}
+- name: Enable site {{ item.name }}
+  loop: "{{ domain_name }}"
   file:
-    src: "/etc/nginx/sites-available/{{ domain_name }}"
-    dest: "/etc/nginx/sites-enabled/{{ domain_name }}"
+    src: "/etc/nginx/sites-available/{{ item.name }}"
+    dest: "/etc/nginx/sites-enabled/{{ item.name }}"
     state: link
   notify: Reload nginx
 

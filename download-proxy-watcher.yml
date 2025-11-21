@@ -1,0 +1,57 @@
+- hosts: infra-node
+  become: true
+
+  vars:
+    proxy_watcher_repo: "boanlab/cloud-infra-service"
+    proxy_watcher_version: "v0.1.0"
+    proxy_watcher_pattern: "proxy-watcher"   # 릴리스 asset 이름 패턴
+    proxy_watcher_local_path: "{{ playbook_dir }}/artifacts/proxy-watcher-{{ proxy_watcher_version }}"
+    proxy_watcher_remote_path: "/usr/local/bin/proxy-watcher"
+
+  vars_prompt:
+    - name: github_token
+      prompt: "Enter your GitHub Token (PAT)"
+      private: yes
+
+  tasks:
+    - name: Ensure artifacts dir exists on control node
+    # 컨트롤 노드(= ansible-playbook 실행하는 머신)에서만 실행
+      delegate_to: localhost
+      run_once: true
+      file:
+        path: "{{ proxy_watcher_local_path | dirname }}"
+        state: directory
+
+    - name: gh auth login on control node (with token)
+      delegate_to: localhost
+      run_once: true
+      environment:
+        GITHUB_TOKEN: "{{ github_token }}"
+      shell: |
+        set -e
+        # 이미 로그인 돼 있으면 패스
+        if ! gh auth status >/dev/null 2>&1; then
+          echo "$GITHUB_TOKEN" | gh auth login --with-token
+        fi
+      args:
+        creates: "{{ lookup('env','HOME') }}/.config/gh/hosts.yml"
+
+    - name: Download proxy-watcher on control node via gh
+      delegate_to: localhost
+      run_once: true
+      environment:
+        GITHUB_TOKEN: "{{ github_token }}"
+      shell: >
+        gh release download {{ proxy_watcher_version }}
+        -R {{ proxy_watcher_repo }}
+        -p "{{ proxy_watcher_pattern }}"
+        -O "{{ proxy_watcher_local_path }}"
+      args:
+        creates: "{{ proxy_watcher_local_path }}"
+      register: gh_dl_result
+
+    - name: Copy proxy-watcher binary to remote host
+      copy:
+        src: "{{ proxy_watcher_local_path }}"
+        dest: "{{ proxy_watcher_remote_path }}"
+        mode: "0755"
