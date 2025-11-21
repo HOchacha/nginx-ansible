@@ -1,0 +1,7 @@
+domain_name:
+  - name: "boan.kloud.zone"
+    webroot_path: "/var/www/boan.kloud.zone"
+    letsencrypt_email: "boan@boanlab.com"
+  - name: "nsx.boanlab.com"
+    webroot_path: "/var/www/nsx.boanlab.com"
+    letsencrypt_email: "boan@boanlab.com"

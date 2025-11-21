@@ -1,11 +1,6 @@
 - name: Setup Nginx and Let's Encrypt (Certbot)
   hosts: web
   become: true
-
-  vars:
-    domain_name: "boan.kloud.zone"
-    letsencrypt_email: "boan@boanlab.com"
-
   roles:
     - nginx
     - certbot
